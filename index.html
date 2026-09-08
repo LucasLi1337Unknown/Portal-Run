@@ -1,38 +1,412 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Portal Race</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Race v2</title>
 <style>
-:root{--bg:#0a1020;--panel:#121b33;--text:#eef3ff;--muted:#9fb0d6;--violet:#7c5cff;--pink:#ff6b8b;--cyan:#42c9ff;--green:#5ce1a4}*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text);background:radial-gradient(circle at 15% 10%,#32246c55,transparent 30%),radial-gradient(circle at 85% 10%,#175d7150,transparent 30%),linear-gradient(145deg,#070b15,#0b1122 50%,#111831)}button{font:inherit}.app{max-width:1450px;margin:auto;padding:18px;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:18px}.card{background:#121b33e8;border:1px solid #ffffff12;border-radius:22px;box-shadow:0 20px 55px #0006;backdrop-filter:blur(12px)}.top{grid-column:1/-1;padding:14px 18px;display:flex;justify-content:space-between;align-items:center}.brand{display:flex;gap:12px;align-items:center}.logo{width:45px;height:45px;border-radius:14px;display:grid;place-items:center;font-size:25px;background:linear-gradient(135deg,#7c5cff,#43d5ff)}h1{font-size:20px;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:2px}.pills{display:flex;gap:8px;flex-wrap:wrap}.pill{font-size:11px;color:#c5d1ed;background:#0c1428;padding:7px 9px;border-radius:999px}.boardCard{padding:16px}.boardHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.boardHead h2{font-size:16px;margin:0}.turn{font-size:12px;background:#0c1428;padding:8px 11px;border-radius:11px}.boardWrap{aspect-ratio:1/1;max-height:calc(100vh - 160px);margin:auto}.board{height:100%;display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(7,1fr);gap:6px;padding:6px;border-radius:25px;background:#0b1327;border:1px solid #ffffff10}.cell{position:relative;border-radius:14px;background:linear-gradient(145deg,#233257,#17213e);border:1px solid #ffffff10;display:flex;align-items:center;justify-content:center;overflow:hidden}.cell.start{background:linear-gradient(145deg,#175d4e,#123d38)}.cell.finish{background:linear-gradient(145deg,#7a5c19,#4e3b12)}.cell.portal{background:linear-gradient(145deg,#50328c,#2e2256)}.cell.forward{background:linear-gradient(145deg,#17626e,#10404a)}.cell.back{background:linear-gradient(145deg,#792f4e,#4b2136)}.cell.shield{background:linear-gradient(145deg,#215582,#173652)}.cell.swap{background:linear-gradient(145deg,#765319,#4b3512)}.cell.mystery{background:linear-gradient(145deg,#60417a,#37294c)}.cell.current{box-shadow:0 0 0 2px #fff5,0 0 25px #7c5cff88}.num{position:absolute;left:7px;top:5px;font-size:9px;color:#8fa0c8}.icon{font-size:21px}.lab{position:absolute;bottom:5px;font-size:8px;color:#dce4f8}.tokens{position:absolute;inset:0;display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:3px;padding:20% 8% 8%}.token{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;font-size:9px;font-weight:900;border:2px solid #ffffffaa;box-shadow:0 4px 10px #0006}.you{background:var(--violet)}.mira{background:var(--pink)}.byte{background:var(--cyan)}.orbit{background:var(--green);color:#073229}.center{grid-column:3/6;grid-row:3/6;z-index:3;border-radius:27px;background:radial-gradient(circle at 50% 30%,#7c5cff22,transparent 45%),linear-gradient(145deg,#101931,#0a1227);border:1px solid #ffffff12;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:12px}.dice{width:92px;height:92px;border-radius:23px;background:linear-gradient(145deg,#fff,#dce5ff);color:#111a31;display:grid;place-items:center;font-size:48px;box-shadow:0 15px 34px #0007;margin:8px}.dice.rolling{animation:shake .12s infinite}@keyframes shake{0%{transform:rotate(-5deg)}50%{transform:rotate(5deg) scale(1.04)}100%{transform:rotate(-5deg)}}.roll{border:0;border-radius:13px;background:linear-gradient(135deg,#7c5cff,#4f8cff);color:white;font-weight:800;padding:10px 18px;cursor:pointer}.roll:disabled{opacity:.4;cursor:not-allowed}.mini{font-size:10px;color:#a5b3d1;margin-top:7px}.side{display:flex;flex-direction:column;gap:14px}.section{padding:14px}.section h3{font-size:14px;margin:0 0 10px}.player{display:grid;grid-template-columns:42px 1fr auto;gap:9px;align-items:center;padding:9px;border-radius:14px;background:#0d152a;margin-bottom:8px;border:1px solid #ffffff0c}.player.active{border-color:#7c5cff88}.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:900}.name{font-size:13px;font-weight:800}.meta,.pos{font-size:10px;color:#91a2c8}.online{color:#5ce1a4}.think{color:#ffd166}.chatCard{height:280px;display:flex;flex-direction:column}.chat{flex:1;overflow:auto}.msg{font-size:12px;line-height:1.45;margin:7px 0}.sys{color:#8495bb;font-style:italic}.typing{height:18px;font-size:10px;color:#8394b8}.legend{display:grid;grid-template-columns:1fr 1fr;gap:7px}.legend div{font-size:10px;background:#0c1428;padding:7px;border-radius:9px;color:#bdc9e5}.actions{display:flex;gap:8px;margin-top:10px}.small{flex:1;background:#101a33;border:1px solid #ffffff10;color:#dce5fa;border-radius:10px;padding:8px;cursor:pointer}.overlay{display:none;position:fixed;inset:0;z-index:20;background:#050812c7;align-items:center;justify-content:center;padding:20px}.overlay.show{display:flex}.modal{width:min(480px,100%);padding:24px;text-align:center}.modal h2{font-size:27px;margin:0 0 8px}.modal p{color:#afbdd8;line-height:1.6}.toast{position:fixed;z-index:30;left:50%;top:16px;transform:translate(-50%,-15px);opacity:0;background:#101a33;border:1px solid #ffffff15;padding:10px 14px;border-radius:12px;font-size:12px;transition:.25s}.toast.show{opacity:1;transform:translate(-50%,0)}@media(max-width:1000px){.app{grid-template-columns:1fr}.top{grid-column:1}.boardWrap{max-height:none}.side{display:grid;grid-template-columns:1fr 1fr}.side .section:last-child{grid-column:1/-1}}@media(max-width:650px){.app{padding:8px;gap:8px}.top{padding:10px}.sub,.pills{display:none}.boardCard{padding:7px}.board{gap:3px;padding:3px}.cell{border-radius:8px}.icon{font-size:16px}.lab{display:none}.num{font-size:7px;left:3px;top:2px}.center{padding:4px}.dice{width:62px;height:62px;font-size:34px;border-radius:16px}.center h3,.mini{display:none}.roll{padding:8px 12px;font-size:11px}.token{width:18px;height:18px;font-size:7px}.side{display:block}.section{margin-top:8px}}
+:root{
+  --bg:#090f1d;--panel:#121a30;--panel2:#17223e;--text:#eef3ff;--muted:#9eacc9;
+  --purple:#7b61ff;--cyan:#4ddcff;--green:#61e7b3;--yellow:#ffd86f;--red:#ff758d;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 12% 10%,rgba(123,97,255,.20),transparent 30%),
+    radial-gradient(circle at 90% 14%,rgba(77,220,255,.12),transparent 25%),
+    linear-gradient(145deg,#070c17,#0a1020 45%,#11172a);
+}
+button,input{font:inherit}
+.app{max-width:1500px;margin:auto;padding:16px;display:grid;grid-template-columns:minmax(0,1fr) 370px;gap:16px}
+.card{background:rgba(18,26,48,.94);border:1px solid rgba(255,255,255,.08);border-radius:20px;box-shadow:0 18px 50px rgba(0,0,0,.28)}
+.topbar{grid-column:1/-1;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}.logo{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#7b61ff,#43d7ff);font-size:23px}
+.brand h1{margin:0;font-size:21px}.brand small{display:block;color:var(--muted);margin-top:2px}
+.pills{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.pill{font-size:12px;padding:7px 10px;border-radius:999px;background:#0d152a;border:1px solid rgba(255,255,255,.07);color:#c7d2ea}
+.boardCard{padding:14px}
+.boardTitle{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.boardTitle h2{font-size:16px;margin:0}.turn{font-size:12px;color:#d9e2f7;padding:7px 10px;border-radius:10px;background:#0e172d}
+.board{
+  width:min(100%,820px);aspect-ratio:1/1;margin:auto;display:grid;grid-template-columns:repeat(9,1fr);grid-template-rows:repeat(9,1fr);gap:7px;
+  padding:8px;border-radius:28px;background:linear-gradient(145deg,#10182d,#0c1326);border:1px solid rgba(255,255,255,.07)
+}
+.cell{
+  position:relative;border-radius:14px;background:linear-gradient(145deg,#263252,#1a2440);
+  border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden
+}
+.cell.start{background:linear-gradient(145deg,#19634e,#123b32)}
+.cell.finish{background:linear-gradient(145deg,#74541b,#4f3b14)}
+.cell.portal{background:linear-gradient(145deg,#54338f,#302057)}
+.cell.forward{background:linear-gradient(145deg,#116377,#123f50)}
+.cell.back{background:linear-gradient(145deg,#7a304d,#4d2035)}
+.cell.shield{background:linear-gradient(145deg,#255b84,#183a57)}
+.cell.swap{background:linear-gradient(145deg,#785621,#493711)}
+.cell.mystery{background:linear-gradient(145deg,#653d77,#3d294b)}
+.cell.current{outline:3px solid rgba(255,255,255,.75);box-shadow:0 0 26px rgba(123,97,255,.42)}
+.cellNum{position:absolute;left:6px;top:4px;font-size:10px;color:#a7b5d4;font-weight:700}
+.cellIcon{font-size:24px;line-height:1}
+.cellText{position:absolute;bottom:4px;left:4px;right:4px;text-align:center;font-size:9px;color:#f3f6ff;font-weight:800;text-shadow:0 1px 4px #000}
+.tokens{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:2px;flex-wrap:wrap;padding:17px 6px 15px}
+.token{width:23px;height:23px;border-radius:50%;border:2px solid rgba(255,255,255,.85);display:grid;place-items:center;font-size:9px;font-weight:900;color:white;box-shadow:0 4px 10px rgba(0,0,0,.35)}
+.token.p0{background:#7b61ff}.token.p1{background:#ff6f91}.token.p2{background:#43c9ff}.token.p3{background:#62e4ad;color:#0b2f24}
+.center{
+  grid-column:3/8;grid-row:3/8;border-radius:28px;background:
+  radial-gradient(circle at 50% 35%,rgba(123,97,255,.17),transparent 43%),linear-gradient(145deg,#121b35,#0c1428);
+  border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;z-index:2
+}
+.center h3{margin:0 0 3px;font-size:18px}.center small{color:#9faed0}.dice{width:96px;height:96px;border-radius:24px;background:linear-gradient(145deg,#fff,#dfe7ff);color:#111a31;display:grid;place-items:center;font-size:50px;margin:14px 0 11px;box-shadow:0 16px 34px rgba(0,0,0,.28)}
+.dice.rolling{animation:shake .12s infinite linear}@keyframes shake{0%{transform:rotate(-5deg)}50%{transform:rotate(5deg) scale(1.03)}100%{transform:rotate(-5deg)}}
+.roll{border:0;border-radius:13px;padding:11px 20px;color:white;font-weight:900;cursor:pointer;background:linear-gradient(135deg,#7b61ff,#4f8dff);box-shadow:0 8px 20px rgba(123,97,255,.28)}
+.roll:disabled{opacity:.45;cursor:not-allowed}.rule{font-size:11px;color:#a8b5d1;margin-top:9px}
+.side{display:flex;flex-direction:column;gap:14px}.players,.chatCard,.legend{padding:14px}.players h3,.chatCard h3,.legend h3{font-size:14px;margin:0 0 10px}
+.player{display:grid;grid-template-columns:42px 1fr auto;gap:10px;align-items:center;padding:10px;border-radius:14px;background:#0e162b;border:1px solid rgba(255,255,255,.055);margin-bottom:8px}
+.player.active{border-color:#7b61ff99;box-shadow:inset 0 0 0 1px #7b61ff33}.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:900}
+.avatar.p0{background:#7b61ff}.avatar.p1{background:#ff6f91}.avatar.p2{background:#43c9ff}.avatar.p3{background:#62e4ad;color:#0b2f24}
+.pname{font-size:13px;font-weight:850}.meta{font-size:10px;color:#93a3c3;margin-top:3px}.where{font-size:10px;color:#bcc8e0;margin-top:2px}.pos{font-size:11px;color:#dce5f9;text-align:right}
+.dot{color:#62e4ad}.thinking{color:#ffd86f}
+.chatCard{height:315px;display:flex;flex-direction:column}.chat{flex:1;overflow:auto;padding-right:3px}.msg{font-size:12px;line-height:1.45;margin:7px 0}.msg b{margin-right:5px}.msg.system{color:#8191b5;font-style:italic}.typing{height:18px;font-size:10px;color:#8292b4;margin-top:3px}
+.chatForm{display:flex;gap:7px;margin-top:7px}.chatForm input{min-width:0;flex:1;border:1px solid rgba(255,255,255,.09);background:#0c1428;color:white;border-radius:10px;padding:9px 10px;outline:none}.chatForm input:focus{border-color:#7b61ff}.send{border:0;border-radius:10px;padding:8px 12px;background:#6f59ec;color:white;font-weight:800;cursor:pointer}
+.legendGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.legendGrid div{font-size:11px;color:#c0cbe3;background:#0d1529;padding:7px 8px;border-radius:9px}
+.actions{display:flex;gap:7px;margin-top:10px}.secondary{flex:1;background:#111a31;border:1px solid rgba(255,255,255,.08);color:#dbe4f6;border-radius:10px;padding:8px;cursor:pointer}
+.toast{position:fixed;left:50%;top:18px;transform:translateX(-50%) translateY(-18px);opacity:0;background:#111a31;border:1px solid rgba(255,255,255,.1);padding:10px 14px;border-radius:11px;transition:.23s;z-index:30;font-size:13px}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.overlay{position:fixed;inset:0;background:rgba(4,7,14,.78);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}.overlay.show{display:flex}.modal{width:min(480px,100%);padding:24px;text-align:center}.modal h2{margin:0 0 8px}.modal p{color:#aebbd3;line-height:1.6}
+@media(max-width:1020px){.app{grid-template-columns:1fr}.topbar{grid-column:1}.side{display:grid;grid-template-columns:1fr 1fr}.legend{grid-column:1/-1}}
+@media(max-width:680px){.app{padding:7px;gap:8px}.topbar{padding:10px}.brand small{display:none}.boardCard{padding:7px}.board{gap:3px;padding:3px}.cell{border-radius:8px}.cellIcon{font-size:16px}.cellText{font-size:7px}.cellNum{font-size:8px;left:3px;top:2px}.tokens{padding:12px 2px 10px}.token{width:17px;height:17px;font-size:7px}.center{padding:7px}.center h3{font-size:13px}.center small,.rule{display:none}.dice{width:62px;height:62px;font-size:34px;border-radius:17px;margin:8px}.roll{font-size:12px;padding:8px 12px}.side{display:block}.players,.chatCard,.legend{margin-top:8px}.pills{display:none}}
 </style>
 </head>
 <body>
 <div class="toast" id="toast"></div>
 <div class="app">
-<div class="top card"><div class="brand"><div class="logo">🌀</div><div><h1>Portal Race</h1><div class="sub">四人异次元棋局 · 正在和“真人网友”对局</div></div></div><div class="pills"><span class="pill">房间 #7F3A</span><span class="pill">延迟 28ms</span><span class="pill">混沌模式</span></div></div>
-<div class="boardCard card"><div class="boardHead"><h2>星环赛道</h2><div class="turn" id="turn">轮到你了</div></div><div class="boardWrap"><div class="board" id="board"><div class="center"><div class="mini">当前骰子</div><div class="dice" id="dice">⚀</div><button class="roll" id="rollBtn">摇骰子</button><div class="mini">🎲 摇到 <b>1</b> 可以再摇一次，不是 6 😈</div></div></div></div></div>
-<div class="side">
-<div class="section card"><h3>👥 玩家</h3><div id="players"></div></div>
-<div class="section card chatCard"><h3>💬 房间聊天</h3><div class="chat" id="chat"></div><div class="typing" id="typing"></div></div>
-<div class="section card"><h3>🧭 特殊格</h3><div class="legend"><div>🌀 传送门</div><div>⚡ 前进</div><div>🕳️ 后退</div><div>🛡️ 护盾</div><div>🔀 换位</div><div>❓ 神秘事件</div></div><div class="actions"><button class="small" onclick="showRules()">规则</button><button class="small" onclick="restart()">重新开局</button></div></div>
-</div></div>
-<div class="overlay" id="overlay"><div class="modal card"><h2 id="mTitle">规则</h2><p id="mText"></p><button class="roll" onclick="closeModal()">知道了</button></div></div>
+  <div class="topbar card">
+    <div class="brand"><div class="logo">🌀</div><div><h1>Portal Race v2</h1><small>四人异次元棋局 · 对手看起来非常像真人</small></div></div>
+    <div class="pills"><span class="pill" id="roomPill">房间 #----</span><span class="pill" id="pingPill">延迟 测量中…</span><span class="pill">混沌模式</span></div>
+  </div>
+
+  <div class="boardCard card">
+    <div class="boardTitle"><h2>星环赛道</h2><div class="turn" id="turnText">轮到你了</div></div>
+    <div class="board" id="board">
+      <div class="center">
+        <h3 id="centerName">你的回合</h3>
+        <small id="centerSub">先到终点的人获胜</small>
+        <div class="dice" id="dice">⚀</div>
+        <button class="roll" id="rollBtn">摇骰子</button>
+        <div class="rule">🎲 <b>摇到 1 可以再摇一次</b> · 同格会把对手撞回起点 😈</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="players card"><h3>👥 本局玩家</h3><div id="playerList"></div></div>
+
+    <div class="chatCard card">
+      <h3>💬 房间聊天</h3>
+      <div class="chat" id="chat"></div>
+      <div class="typing" id="typing"></div>
+      <form class="chatForm" id="chatForm">
+        <input id="chatInput" maxlength="120" autocomplete="off" placeholder="发消息给房间…">
+        <button class="send" type="submit">发送</button>
+      </form>
+    </div>
+
+    <div class="legend card">
+      <h3>🧭 特殊格</h3>
+      <div class="legendGrid">
+        <div>🌀 传送门</div><div>⚡ 前进</div><div>🕳️ 后退</div>
+        <div>🛡️ 护盾</div><div>🔀 换位</div><div>❓ 神秘事件</div>
+      </div>
+      <div class="actions"><button class="secondary" onclick="showRules()">规则</button><button class="secondary" onclick="restartGame()">重新匹配</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal card">
+    <h2 id="modalTitle"></h2>
+    <p id="modalText"></p>
+    <button class="roll" onclick="closeModal()">OK</button>
+  </div>
+</div>
+
 <script>
-const N=49,faces=['⚀','⚁','⚂','⚃','⚄','⚅'];const board=document.getElementById('board'),dice=document.getElementById('dice'),rollBtn=document.getElementById('rollBtn'),turn=document.getElementById('turn'),chat=document.getElementById('chat'),typing=document.getElementById('typing'),toastEl=document.getElementById('toast');
-const P=[{name:'Lucas',cls:'you',pos:0,shield:false,human:true,status:'在线'},{name:'MiraNova',cls:'mira',pos:0,shield:false,status:'在线'},{name:'ByteBunny',cls:'byte',pos:0,shield:false,status:'在线'},{name:'KJ_Orbit',cls:'orbit',pos:0,shield:false,status:'在线'}];let cur=0,busy=false,over=false;
-const coords=[];for(let r=0;r<7;r++){if(r%2===0){for(let c=0;c<7;c++)coords.push([r,c]);}else{for(let c=6;c>=0;c--)coords.push([r,c]);}}
-const S={4:{t:'forward',i:'⚡',l:'+3',v:3},7:{t:'portal',i:'🌀',l:'→18',to:18},10:{t:'back',i:'🕳️',l:'-2',v:2},13:{t:'shield',i:'🛡️',l:'护盾'},16:{t:'mystery',i:'❓',l:'事件'},20:{t:'forward',i:'⚡',l:'+4',v:4},23:{t:'swap',i:'🔀',l:'换位'},26:{t:'portal',i:'🌀',l:'→36',to:36},29:{t:'back',i:'🕳️',l:'-3',v:3},32:{t:'shield',i:'🛡️',l:'护盾'},35:{t:'mystery',i:'❓',l:'事件'},39:{t:'forward',i:'⚡',l:'+2',v:2},42:{t:'back',i:'🕳️',l:'-4',v:4},45:{t:'portal',i:'🌀',l:'→47',to:47}};
-function build(){document.querySelectorAll('.cell').forEach(x=>x.remove());for(let i=0;i<N;i++){let[r,c]=coords[i],sp=S[i],el=document.createElement('div');el.className='cell'+(i===0?' start':i===48?' finish':sp?' '+sp.t:'');el.dataset.idx=i;el.style.gridRow=r+1;el.style.gridColumn=c+1;el.innerHTML=`<div class="num">${i+1}</div><div class="icon">${i===0?'🚩':i===48?'🏆':sp?sp.i:''}</div><div class="lab">${i===0?'START':i===48?'FINISH':sp?sp.l:''}</div><div class="tokens"></div>`;board.appendChild(el)}render()}
-function render(){document.querySelectorAll('.tokens').forEach(x=>x.innerHTML='');document.querySelectorAll('.cell').forEach(x=>x.classList.remove('current'));P.forEach((p,i)=>{let h=document.querySelector(`.cell[data-idx="${p.pos}"] .tokens`);if(h){let t=document.createElement('div');t.className='token '+p.cls;t.textContent=i===0?'Y':p.name[0];t.title=p.name;h.appendChild(t)}});document.querySelector(`.cell[data-idx="${P[cur].pos}"]`)?.classList.add('current');document.getElementById('players').innerHTML=P.map((p,i)=>`<div class="player ${i===cur&&!over?'active':''}"><div class="avatar ${p.cls}">${i===0?'Y':p.name.slice(0,2).toUpperCase()}</div><div><div class="name">${p.name}${i===0?' <span class="meta">(你)</span>':''}</div><div class="meta"><span class="${p.status==='在线'?'online':'think'}">● ${p.status}</span>${p.shield?' · 🛡️护盾':''}</div></div><div class="pos">格 ${p.pos+1}</div></div>`).join('');turn.textContent=over?'游戏结束':cur===0?'轮到你了':`${P[cur].name} 正在思考…`;rollBtn.disabled=busy||over||cur!==0}
-function msg(w,t,sys=false){let d=document.createElement('div');d.className='msg'+(sys?' sys':'');d.innerHTML=sys?t:`<b>${w}:</b> ${t}`;chat.appendChild(d);chat.scrollTop=chat.scrollHeight}function toast(t){toastEl.textContent=t;toastEl.classList.add('show');setTimeout(()=>toastEl.classList.remove('show'),1700)}const sleep=m=>new Promise(r=>setTimeout(r,m));
-async function rollFor(i){if(busy||over)return;busy=true;render();dice.classList.add('rolling');let f=1;for(let k=0;k<9;k++){f=1+Math.floor(Math.random()*6);dice.textContent=faces[f-1];await sleep(55+k*6)}dice.classList.remove('rolling');msg('系统',`${P[i].name} 摇出了 ${f}`,true);await move(i,f,true);if(over){busy=false;render();return}if(f===1){toast(`${P[i].name} 摇到 1，再来一次！`);msg('系统',`🎲 ${P[i].name} 获得额外一次投掷`,true);busy=false;render();if(i!==0)setTimeout(aiTurn,700+Math.random()*800);return}cur=(cur+1)%4;busy=false;render();if(cur!==0)setTimeout(aiTurn,700+Math.random()*1100)}
-async function move(i,n,direct){let p=P[i],target=Math.min(48,p.pos+n);while(p.pos<target){p.pos++;render();await sleep(145)}if(p.pos===48){win(i);return}if(direct)await special(i)}
-async function relocate(i,np,why){np=Math.max(0,Math.min(48,np));await sleep(250);P[i].pos=np;render();msg('系统',`${P[i].name} ${why} → 格 ${np+1}`,true);await sleep(330);if(np===48)win(i)}
-async function special(i){let p=P[i],s=S[p.pos];if(!s)return;if(s.t==='portal'){toast('🌀 传送门启动！');await relocate(i,s.to,'被传送')}else if(s.t==='forward'){toast(`⚡ 前进 ${s.v} 格`);await relocate(i,p.pos+s.v,`向前冲了 ${s.v} 格`)}else if(s.t==='back'){if(p.shield){p.shield=false;toast('🛡️ 护盾挡住了后退！');msg('系统',`${p.name} 的护盾挡住了陷阱`,true);render()}else{toast(`🕳️ 后退 ${s.v} 格`);await relocate(i,p.pos-s.v,`倒退了 ${s.v} 格`);react(i,'bad')}}else if(s.t==='shield'){p.shield=true;toast('🛡️ 获得一次陷阱免疫');render()}else if(s.t==='swap'){let a=P.map((x,j)=>({j,pos:x.pos})).filter(x=>x.j!==i&&x.pos>0&&x.pos<48).sort((a,b)=>b.pos-a.pos);if(a.length){let o=P[a[0].j],old=p.pos;p.pos=o.pos;o.pos=old;render();toast(`🔀 和 ${o.name} 换位！`);msg('系统',`${p.name} 与 ${o.name} 交换了位置`,true);react(a[0].j,'swap')}else toast('🔀 暂时没人可以交换')}else if(s.t==='mystery'){let e=[['幸运风暴：前进 2 格',2],['踩到香蕉皮：后退 1 格',-1],['捡到能量饮料：前进 3 格',3],['什么也没发生。真的。',0]][Math.floor(Math.random()*4)];toast('❓ '+e[0]);msg('系统',`${p.name} 的神秘事件：${e[0]}`,true);if(e[1])await relocate(i,p.pos+e[1],'触发神秘事件')}}
-function react(i,kind='normal'){let sets={normal:['nice','hmm','not bad','bro 😭','I can still catch up','gg maybe?'],bad:['NOOO','bruh','that tile hates me','💀','you have got to be kidding'],swap:['HEY GIVE THAT BACK','nahhh 😭','okay that is personal']},a=sets[kind]||sets.normal;if(Math.random()<.65){typing.textContent=`${P[i].name} 正在输入…`;setTimeout(()=>{typing.textContent='';msg(P[i].name,a[Math.floor(Math.random()*a.length)])},500+Math.random()*1000)}}
-async function aiTurn(){if(over||cur===0||busy)return;let i=cur;P[i].status='思考中';render();if(Math.random()<.28)react(i);await sleep(700+Math.random()*1300);P[i].status='在线';render();rollFor(i)}
-function win(i){over=true;document.getElementById('mTitle').textContent=i===0?'🏆 你赢了！':`🏆 ${P[i].name} 获胜`;document.getElementById('mText').innerHTML=i===0?'你成功冲进终点。三个“真人网友”正在努力假装自己不是 AI。':`${P[i].name} 抢先到达终点。下一局报仇。`;document.getElementById('overlay').classList.add('show');msg('系统',`🏆 ${P[i].name} 赢得了本局！`,true);render()}
-function restart(){P.forEach(p=>{p.pos=0;p.shield=false;p.status='在线'});cur=0;busy=false;over=false;dice.textContent='⚀';chat.innerHTML='';msg('系统','已匹配到 3 名玩家。比赛开始！',true);setTimeout(()=>msg('MiraNova','gl hf 👀'),450);setTimeout(()=>msg('ByteBunny','wait 1 gives another roll?? cursed rules lol'),1100);build()}function showRules(){document.getElementById('mTitle').textContent='📜 规则';document.getElementById('mText').innerHTML='四位玩家从 START 出发，先到终点的人获胜。<br><br>每回合摇 1～6，<b>摇到 1 可以额外再摇一次</b>。<br><br>特殊格有传送、前进、后退、护盾、换位和神秘事件。<br><br><b>防卡 Bug：</b>特殊格造成的移动不会继续触发另一个移动类特殊格，所以不会出现“前进 2 → 后退 2 → 无限循环”。';document.getElementById('overlay').classList.add('show')}function closeModal(){document.getElementById('overlay').classList.remove('show')}rollBtn.onclick=()=>rollFor(0);build();msg('系统','已匹配到 3 名玩家。比赛开始！',true);setTimeout(()=>msg('MiraNova','gl hf 👀'),500);setTimeout(()=>msg('ByteBunny','wait 1 gives another roll?? cursed rules lol'),1200);setTimeout(()=>msg('KJ_Orbit','first time here, dont bully me'),1900);
+const CELLS=32, FINISH=31;
+const diceFaces=['⚀','⚁','⚂','⚃','⚄','⚅'];
+const board=document.getElementById('board'), dice=document.getElementById('dice'), rollBtn=document.getElementById('rollBtn');
+const turnText=document.getElementById('turnText'), centerName=document.getElementById('centerName'), centerSub=document.getElementById('centerSub');
+const chat=document.getElementById('chat'), typing=document.getElementById('typing'), pingPill=document.getElementById('pingPill');
+let players=[], current=0, busy=false, gameOver=false, round=1, lastSpeaker=-1;
+
+const namePool=[
+  ['MiraNova','🇨🇦','Vancouver'],['ByteBunny','🇸🇬','Singapore'],['KJ_Orbit','🇯🇵','Osaka'],
+  ['TeaPowered','🇬🇧','Manchester'],['PixelMoth','🇩🇪','Berlin'],['NoScopeNoodle','🇦🇺','Melbourne'],
+  ['MoonToast','🇰🇷','Busan'],['CtrlZed','🇳🇿','Auckland'],['RamenRouter','🇺🇸','Seattle'],
+  ['CloudPigeon','🇫🇷','Lyon'],['404Panda','🇨🇳','Chengdu'],['SleepyKernel','🇳🇱','Rotterdam'],
+  ['KnightShift','🇮🇪','Dublin'],['MintPacket','🇸🇪','Stockholm'],['OrbitDuck','🇵🇱','Warsaw']
+];
+
+const personalities=[
+  {tag:'competitive', lines:['okay im locking in','nah im winning this','that was calculated','dont get comfortable','watch this comeback']},
+  {tag:'chaos', lines:['WHAT is this board 😭','this game is cursed','I trust the mystery tile','portal time lets gooo','why am i enjoying this']},
+  {tag:'chill', lines:['nice roll','gg either way','that was lucky lol','im just vibing','not bad']},
+  {tag:'dramatic', lines:['THIS CHANGES EVERYTHING','my career is over','absolute cinema','betrayal','I will remember this']}
+];
+
+const special={
+  3:{type:'forward',icon:'⚡',text:'+2',value:2},
+  5:{type:'portal',icon:'🌀',text:'→12',to:12},
+  8:{type:'back',icon:'🕳️',text:'-2',value:2},
+  10:{type:'shield',icon:'🛡️',text:'护盾'},
+  13:{type:'mystery',icon:'❓',text:'事件'},
+  16:{type:'forward',icon:'⚡',text:'+3',value:3},
+  19:{type:'swap',icon:'🔀',text:'换位'},
+  21:{type:'back',icon:'🕳️',text:'-3',value:3},
+  23:{type:'portal',icon:'🌀',text:'→28',to:28},
+  26:{type:'shield',icon:'🛡️',text:'护盾'},
+  29:{type:'mystery',icon:'❓',text:'事件'}
+};
+
+function perimeterCoords(){
+  const a=[];
+  for(let c=0;c<9;c++) a.push([0,c]);
+  for(let r=1;r<9;r++) a.push([r,8]);
+  for(let c=7;c>=0;c--) a.push([8,c]);
+  for(let r=7;r>=1;r--) a.push([r,0]);
+  return a;
+}
+const coords=perimeterCoords();
+
+function shuffled(a){return [...a].sort(()=>Math.random()-.5)}
+function rand(a){return a[Math.floor(Math.random()*a.length)]}
+function roomCode(){return Math.random().toString(36).slice(2,6).toUpperCase()}
+
+function makePlayers(){
+  const chosen=shuffled(namePool).slice(0,3);
+  players=[{name:'Lucas',flag:'🟣',city:'You',cls:'p0',pos:0,shield:false,human:true,personality:null,status:'在线'}];
+  chosen.forEach((x,i)=>players.push({name:x[0],flag:x[1],city:x[2],cls:'p'+(i+1),pos:0,shield:false,human:false,personality:rand(personalities),status:'在线'}));
+}
+
+function buildBoard(){
+  document.querySelectorAll('.cell').forEach(e=>e.remove());
+  for(let i=0;i<CELLS;i++){
+    const [r,c]=coords[i];
+    const s=special[i];
+    const el=document.createElement('div');
+    el.className='cell '+(i===0?'start ':i===FINISH?'finish ':s?s.type+' ':'');
+    el.dataset.i=i;el.style.gridRow=r+1;el.style.gridColumn=c+1;
+    el.innerHTML=`<span class="cellNum">${i+1}</span><span class="cellIcon">${i===0?'🚩':i===FINISH?'🏆':s?s.icon:''}</span><span class="cellText">${i===0?'START':i===FINISH?'FINISH':s?s.text:''}</span><div class="tokens"></div>`;
+    board.appendChild(el);
+  }
+  render();
+}
+
+function render(){
+  document.querySelectorAll('.tokens').forEach(e=>e.innerHTML='');
+  document.querySelectorAll('.cell').forEach(e=>e.classList.remove('current'));
+  players.forEach((p,i)=>{
+    const box=document.querySelector(`.cell[data-i="${p.pos}"] .tokens`);
+    if(box){
+      const t=document.createElement('div');t.className='token '+p.cls;t.textContent=i===0?'YOU':p.name[0];t.title=p.name;box.appendChild(t);
+    }
+  });
+  const cp=players[current];
+  document.querySelector(`.cell[data-i="${cp.pos}"]`)?.classList.add('current');
+  document.getElementById('playerList').innerHTML=players.map((p,i)=>`
+    <div class="player ${i===current&&!gameOver?'active':''}">
+      <div class="avatar ${p.cls}">${i===0?'YOU':p.name.slice(0,2).toUpperCase()}</div>
+      <div><div class="pname">${p.flag} ${p.name}${i===0?' <span style="color:#8f9dbd">(你)</span>':''}</div>
+      <div class="meta"><span class="${p.status==='在线'?'dot':'thinking'}">● ${p.status}</span>${p.shield?' · 🛡️ 护盾':''}</div>
+      <div class="where">${i===0?'本机':p.city+' · '+(25+Math.floor(Math.random()*95))+'ms'}</div></div>
+      <div class="pos">格 ${p.pos+1}</div>
+    </div>`).join('');
+  turnText.textContent=gameOver?'游戏结束':current===0?`第 ${round} 轮 · 轮到你`: `第 ${round} 轮 · ${cp.name} 思考中`;
+  centerName.textContent=gameOver?'本局结束':current===0?'你的回合':cp.name+' 的回合';
+  centerSub.textContent=current===0?'摇骰子，看看命运想不想整你':cp.status==='思考中'?'对方正在决定要不要相信这个骰子…':'等待投掷';
+  rollBtn.disabled=busy||gameOver||current!==0;
+}
+
+function msg(name,text,system=false){
+  const d=document.createElement('div');d.className='msg'+(system?' system':'');d.innerHTML=system?text:`<b>${name}:</b>${escapeHtml(text)}`;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1700)}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+
+const eventLines={
+  one:['ONE AGAIN???','extra roll moment','1 is secretly the best number','bro got the bonus roll'],
+  capture:['NOOO I GOT SENT HOME','that was personal','I was literally standing there 😭','revenge arc starts now','illegal. absolutely illegal.'],
+  capturedYou:['LMAOOO back to start','sorry not sorry','airport shuttle to START 💀','welcome home'],
+  portal:['portal gaming','where did you GO','okay teleportation is unfair','speedrun strats'],
+  bad:['bruh','pain.','this board hates me','wonderful. absolutely wonderful.','i am uninstalling the dice'],
+  good:['LETS GOO','W roll','finally something good','calculated','we take those'],
+  nearWin:['uh oh','someone stop them','NO WAY they are that close','this is getting serious'],
+  userChat:['lol','real','😭','fair enough','bro','exactly','nahhh','true','good luck with that 💀']
+};
+
+function aiSpeak(idx,kind='normal'){
+  if(idx<=0||idx>=players.length||gameOver)return;
+  const p=players[idx];
+  let pool=p.personality.lines;
+  if(eventLines[kind]) pool=eventLines[kind];
+  const line=rand(pool);
+  const delay=450+Math.random()*1200;
+  typing.textContent=`${p.name} 正在输入…`;
+  setTimeout(()=>{typing.textContent='';msg(p.name,line);lastSpeaker=idx},delay);
+}
+
+function randomRoundChatter(){
+  if(gameOver)return;
+  const idx=1+Math.floor(Math.random()*3);
+  const contexts=[
+    ()=>players[idx].pos>24?'nearWin':'normal',
+    ()=>players[idx].pos<8?'normal':'good',
+    ()=>Math.random()<.25?'bad':'normal'
+  ];
+  aiSpeak(idx,rand(contexts)());
+}
+
+async function rollFor(idx){
+  if(busy||gameOver)return;
+  busy=true;players[idx].status='掷骰中';render();dice.classList.add('rolling');
+  let n=1;
+  for(let k=0;k<9;k++){n=1+Math.floor(Math.random()*6);dice.textContent=diceFaces[n-1];await sleep(55+k*6)}
+  dice.classList.remove('rolling');players[idx].status='在线';msg('系统',`${players[idx].name} 摇出 ${n}`,true);
+  await move(idx,n,true);
+  if(gameOver){busy=false;render();return}
+  if(n===1){
+    toast(`${players[idx].name} 摇到 1，再摇一次！`);
+    if(idx>0&&Math.random()<.7) aiSpeak(idx,'one');
+    busy=false;render();
+    if(idx>0)setTimeout(aiTurn,650+Math.random()*900);
+    return;
+  }
+  current=(current+1)%players.length;
+  if(current===0){round++;if(Math.random()<.8)setTimeout(randomRoundChatter,300+Math.random()*800)}
+  busy=false;render();
+  if(current!==0)setTimeout(aiTurn,650+Math.random()*1200);
+}
+
+async function move(idx,steps,direct){
+  const p=players[idx];let target=Math.min(FINISH,p.pos+steps);
+  while(p.pos<target){p.pos++;render();await sleep(135)}
+  if(p.pos===FINISH){win(idx);return}
+  if(direct) await resolveSpecial(idx);
+  if(!gameOver) await checkCapture(idx);
+}
+
+async function relocate(idx,target,reason){
+  const p=players[idx];p.pos=Math.max(0,Math.min(FINISH,target));render();msg('系统',`${p.name} ${reason} → 格 ${p.pos+1}`,true);await sleep(320);
+  if(p.pos===FINISH)win(idx);
+}
+
+async function checkCapture(idx){
+  const attacker=players[idx];
+  if(attacker.pos===0||attacker.pos===FINISH)return;
+  const victims=[];
+  players.forEach((p,i)=>{if(i!==idx&&p.pos===attacker.pos)victims.push(i)});
+  if(!victims.length)return;
+  for(const vi of victims){
+    const v=players[vi];
+    if(v.shield){
+      v.shield=false;msg('系统',`🛡️ ${v.name} 的护盾挡住了 ${attacker.name} 的撞击！`,true);toast(`${v.name} 用护盾保住了位置`);
+      if(vi>0) aiSpeak(vi,'good');
+    }else{
+      v.pos=0;render();msg('系统',`💥 ${attacker.name} 撞飞了 ${v.name}，${v.name} 回到 START！`,true);toast(`💥 ${v.name} 被送回起点`);
+      if(vi>0) aiSpeak(vi,'capture');
+      if(idx>0&&vi===0) aiSpeak(idx,'capturedYou');
+      await sleep(300);
+    }
+  }
+}
+
+async function resolveSpecial(idx){
+  const p=players[idx],s=special[p.pos];if(!s)return;
+  if(s.type==='portal'){toast('🌀 传送门启动');await relocate(idx,s.to,'穿过传送门');if(idx>0)aiSpeak(idx,'portal')}
+  else if(s.type==='forward'){toast(`⚡ 前进 ${s.value} 格`);await relocate(idx,p.pos+s.value,`加速 ${s.value} 格`);if(idx>0&&Math.random()<.6)aiSpeak(idx,'good')}
+  else if(s.type==='back'){
+    if(p.shield){p.shield=false;render();msg('系统',`🛡️ ${p.name} 的护盾挡住了后退陷阱`,true);toast('护盾挡住陷阱')}
+    else{toast(`🕳️ 后退 ${s.value} 格`);await relocate(idx,p.pos-s.value,`后退 ${s.value} 格`);if(idx>0)aiSpeak(idx,'bad')}
+  }
+  else if(s.type==='shield'){p.shield=true;render();msg('系统',`🛡️ ${p.name} 获得护盾`,true);toast('获得护盾')}
+  else if(s.type==='swap'){
+    const choices=players.map((x,i)=>({i,pos:x.pos})).filter(x=>x.i!==idx&&x.pos>0&&x.pos<FINISH);
+    if(!choices.length){msg('系统','🔀 没有可交换的玩家',true);return}
+    const o=rand(choices),other=players[o.i],old=p.pos;p.pos=other.pos;other.pos=old;render();msg('系统',`🔀 ${p.name} 和 ${other.name} 交换位置！`,true);toast('交换位置');
+    if(o.i>0)aiSpeak(o.i,'capture');
+  }
+  else if(s.type==='mystery'){
+    const ev=[
+      {text:'捡到火箭鞋：前进 2 格',d:2,kind:'good'},
+      {text:'被鸽子袭击：后退 1 格',d:-1,kind:'bad'},
+      {text:'发现捷径：前进 4 格',d:4,kind:'good'},
+      {text:'时间冻结：什么都没发生',d:0,kind:'normal'},
+      {text:'捡到护盾',shield:true,kind:'good'}
+    ];
+    const e=rand(ev);msg('系统',`❓ ${p.name}：${e.text}`,true);toast(e.text);
+    if(e.shield){p.shield=true;render()}else if(e.d)await relocate(idx,p.pos+e.d,'触发神秘事件');
+    if(idx>0&&Math.random()<.8)aiSpeak(idx,e.kind);
+  }
+  // Anti-loop rule: tile-caused relocation does NOT recursively trigger another special tile.
+}
+
+async function aiTurn(){
+  if(gameOver||current===0||busy)return;
+  const idx=current,p=players[idx];p.status='思考中';render();
+  if(Math.random()<.4)aiSpeak(idx,'normal');
+  await sleep(700+Math.random()*1500);
+  p.status='在线';render();rollFor(idx);
+}
+
+function win(idx){
+  gameOver=true;const p=players[idx];document.getElementById('modalTitle').textContent=idx===0?'🏆 你赢了！':`🏆 ${p.name} 获胜`;
+  document.getElementById('modalText').innerHTML=idx===0?'你第一个冲进终点。三个 AI 网友现在正在假装网络不好。':`${p.name} 抢先到达终点。重新匹配可以换一批全新的“网友”。`;
+  document.getElementById('overlay').classList.add('show');msg('系统',`🏆 ${p.name} 赢得比赛！`,true);render()
+}
+
+function showRules(){
+  document.getElementById('modalTitle').textContent='📜 Portal Race 规则';
+  document.getElementById('modalText').innerHTML=`四人从 START 出发，先到 FINISH 获胜。<br><br>
+  每回合摇 1～6，<b>摇到 1 可以再摇一次</b>。<br><br>
+  如果你移动后和另一名玩家停在同一格，会把对方<b>撞回 START</b>。护盾可以挡一次撞击或一次后退陷阱。<br><br>
+  特殊格造成的位移不会继续触发另一张移动格，所以不会出现无限循环。`;
+  document.getElementById('overlay').classList.add('show')
+}
+function closeModal(){document.getElementById('overlay').classList.remove('show')}
+
+function restartGame(){
+  makePlayers();current=0;busy=false;gameOver=false;round=1;chat.innerHTML='';dice.textContent='⚀';
+  document.getElementById('roomPill').textContent='房间 #'+roomCode();buildBoard();
+  msg('系统','正在连接匹配服务器…',true);
+  setTimeout(()=>msg('系统',`匹配完成：${players.slice(1).map(p=>p.name).join('、')}`,true),380);
+  setTimeout(()=>aiSpeak(1,'normal'),700);setTimeout(()=>aiSpeak(2,'normal'),1400);setTimeout(()=>aiSpeak(3,'normal'),2200);
+}
+
+document.getElementById('chatForm').addEventListener('submit',e=>{
+  e.preventDefault();const input=document.getElementById('chatInput');const text=input.value.trim();if(!text)return;
+  msg('Lucas',text);input.value='';
+  const responders=shuffled([1,2,3]).slice(0,Math.random()<.25?2:1);
+  responders.forEach((i,k)=>setTimeout(()=>aiSpeak(i,'userChat'),450+k*800+Math.random()*900))
+});
+rollBtn.addEventListener('click',()=>rollFor(0));
+
+async function measureLatency(){
+  if(location.protocol==='file:'){pingPill.textContent='延迟 本地模式';pingPill.title='file:// 页面没有远程服务器可测';return}
+  const samples=[];
+  for(let i=0;i<3;i++){
+    try{
+      const start=performance.now();
+      await fetch(location.pathname+'?ping='+Date.now()+Math.random(),{method:'HEAD',cache:'no-store'});
+      samples.push(performance.now()-start);
+    }catch(e){}
+  }
+  if(samples.length){
+    samples.sort((a,b)=>a-b);const ms=Math.round(samples[Math.floor(samples.length/2)]);
+    pingPill.textContent=`延迟 ≈ ${ms}ms`;
+    pingPill.title='测量浏览器到当前网页主机的 HTTP 往返时间，不是电脑本身的固定延迟';
+  }else pingPill.textContent='延迟 无法测量';
+}
+setInterval(measureLatency,15000);
+
+restartGame();measureLatency();
 </script>
-</body></html>
+</body>
+</html>
