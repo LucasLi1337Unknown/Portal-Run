@@ -1,2 +1,22 @@
-# Portal-Run
-Portal Run Official: Play Portal Run with pretty much Humans
+# Portal Race
+
+一个四人网页棋盘游戏：你和三个“看起来像真人”的 AI 玩家比赛，先到终点获胜。
+
+## 规则
+
+- 每回合摇 1～6。
+- **摇到 1 可以再摇一次**，不是 6。
+- 特殊格包括传送门、前进、后退、护盾、换位、神秘事件。
+- 特殊格造成的位移不会继续触发另一个“移动类特殊格”，防止无限循环 Bug。
+
+## 假真人 AI
+
+- MiraNova
+- ByteBunny
+- KJ_Orbit
+
+它们会有随机思考时间、在线状态、正在输入和聊天吐槽，让房间更像真人对局。
+
+## GitHub Pages
+
+直接把 `index.html` 放进仓库即可运行。不需要 npm、不需要服务器、不需要外部库。
