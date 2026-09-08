@@ -79,7 +79,7 @@ button,input{font:inherit}
 <div class="toast" id="toast"></div>
 <div class="app">
   <div class="topbar card">
-    <div class="brand"><div class="logo">🌀</div><div><h1>Portal Race v2</h1><small>四人异次元棋局 · 对手看起来非常像真人</small></div></div>
+    <div class="brand"><div class="logo">🌀</div><div><h1>Portal Race v2</h1><small>四人异次元棋局 · 自动生成你的临时网名</small></div></div>
     <div class="pills"><span class="pill" id="roomPill">房间 #----</span><span class="pill" id="pingPill">延迟 测量中…</span><span class="pill">混沌模式</span></div>
   </div>
 
@@ -181,7 +181,9 @@ function roomCode(){return Math.random().toString(36).slice(2,6).toUpperCase()}
 
 function makePlayers(){
   const chosen=shuffled(namePool).slice(0,3);
-  players=[{name:'Lucas',flag:'🟣',city:'You',cls:'p0',pos:0,shield:false,human:true,personality:null,status:'在线'}];
+  const guestNames=['NovaFox','PixelPuff','StarMango','BlueComet','MintToast','OrbitCat','TinyMeteor','CloudBean','ByteOtter','NeonDuck','CosmicKiwi','MoonNoodle','TurboPanda','LazyRocket','EchoBerry','GlitchFox','TeaDragon','SleepyNova','PicoPenguin','SunnyByte'];
+  const guestName=rand(guestNames);
+  players=[{name:guestName,flag:'🟣',city:'You',cls:'p0',pos:0,shield:false,human:true,personality:null,status:'在线'}];
   chosen.forEach((x,i)=>players.push({name:x[0],flag:x[1],city:x[2],cls:'p'+(i+1),pos:0,shield:false,human:false,personality:rand(personalities),status:'在线'}));
 }
 
@@ -219,7 +221,7 @@ function render(){
       <div class="pos">格 ${p.pos+1}</div>
     </div>`).join('');
   turnText.textContent=gameOver?'游戏结束':current===0?`第 ${round} 轮 · 轮到你`: `第 ${round} 轮 · ${cp.name} 思考中`;
-  centerName.textContent=gameOver?'本局结束':current===0?'你的回合':cp.name+' 的回合';
+  centerName.textContent=gameOver?'本局结束':current===0?`${players[0].name} · 你的回合`:cp.name+' 的回合';
   centerSub.textContent=current===0?'摇骰子，看看命运想不想整你':cp.status==='思考中'?'对方正在决定要不要相信这个骰子…':'等待投掷';
   rollBtn.disabled=busy||gameOver||current!==0;
 }
@@ -358,7 +360,7 @@ async function aiTurn(){
 
 function win(idx){
   gameOver=true;const p=players[idx];document.getElementById('modalTitle').textContent=idx===0?'🏆 你赢了！':`🏆 ${p.name} 获胜`;
-  document.getElementById('modalText').innerHTML=idx===0?'你第一个冲进终点。三个 AI 网友现在正在假装网络不好。':`${p.name} 抢先到达终点。重新匹配可以换一批全新的“网友”。`;
+  document.getElementById('modalText').innerHTML=idx===0?'你第一个冲进终点。三个 AI 网友现在正在假装网络不好。':`${p.name} 抢先到达终点。重新匹配会连你自己的临时网名一起换掉，再匹配一批全新的“网友”。`;
   document.getElementById('overlay').classList.add('show');msg('系统',`🏆 ${p.name} 赢得比赛！`,true);render()
 }
 
@@ -382,7 +384,7 @@ function restartGame(){
 
 document.getElementById('chatForm').addEventListener('submit',e=>{
   e.preventDefault();const input=document.getElementById('chatInput');const text=input.value.trim();if(!text)return;
-  msg('Lucas',text);input.value='';
+  msg(players[0].name,text);input.value='';
   const responders=shuffled([1,2,3]).slice(0,Math.random()<.25?2:1);
   responders.forEach((i,k)=>setTimeout(()=>aiSpeak(i,'userChat'),450+k*800+Math.random()*900))
 });
